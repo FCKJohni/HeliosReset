@@ -14,7 +14,7 @@ class ConfigStorage(private val heliosReset: HeliosReset) {
     private var hoconConfigurationLoader : HoconConfigurationLoader by Delegates.notNull()
     private var root: CommentedConfigurationNode by Delegates.notNull()
 
-    fun initConfig(){
+    private fun initConfig(){
         val location: Path = File(heliosReset.dataFolder.absolutePath + File.separator + "config.yml").toPath()
         if(!location.toFile().parentFile.exists()){
             Files.createDirectories(location.toFile().parentFile.toPath())
@@ -43,5 +43,9 @@ class ConfigStorage(private val heliosReset: HeliosReset) {
 
     fun save(){
         hoconConfigurationLoader.save(root)
+    }
+
+    init {
+        initConfig()
     }
 }

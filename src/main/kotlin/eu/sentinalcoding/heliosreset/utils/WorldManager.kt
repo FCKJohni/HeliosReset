@@ -1,8 +1,8 @@
 package eu.sentinalcoding.heliosreset.utils
 
 import com.okkero.skedule.schedule
-import eu.sentinalcoding.heliosreset.Constants
 import eu.sentinalcoding.heliosreset.HeliosReset
+import eu.sentinalcoding.heliosreset.PREFIX
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import org.bukkit.Bukkit
 import org.bukkit.World
@@ -19,27 +19,27 @@ class WorldManager(private val heliosReset: HeliosReset) {
     private var directory: Path by Delegates.notNull()
     private var scheduler = Bukkit.getScheduler()
 
-    fun initManager(){
-        val worldName = heliosReset.getLoader().getConfig().getWorld()
+    private fun initManager(){
+        val worldName = heliosReset.configStorage.getWorld()
         if(worldName == "-1"){
             Bukkit.getConsoleSender().sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize("Invalid or none world saved, use /hr setworld [World] to set a valid world and restart the Server."))
             return
         }
-        world = Bukkit.createWorld(WorldCreator(heliosReset.getLoader().getConfig().getWorld()))!!
+        world = Bukkit.createWorld(WorldCreator(heliosReset.configStorage.getWorld()))!!
         directory = heliosReset.dataFolder.toPath().resolve("saves")
         if(!directory.toFile().exists()){
             Files.createDirectories(directory)
         }
 
         if(!Files.exists(directory.resolve(world.name))){
-            Bukkit.getConsoleSender().sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(Constants.PREFIX + "§cUnloading world to Save!"))
+            Bukkit.getConsoleSender().sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(PREFIX + "§cUnloading world to Save!"))
             if(Bukkit.unloadWorld(world, true)) {
                 scheduler.schedule(heliosReset) {
                     waitFor(60)
                     copyWorld(world.worldFolder.toPath(), directory.resolve(world.name))
                     Bukkit.getConsoleSender().sendMessage(
                         LegacyComponentSerializer.legacyAmpersand()
-                            .deserialize(Constants.PREFIX + "§cSaving of World §8[§6" + world.name + "§8] §ccompleted!")
+                            .deserialize(PREFIX + "§cSaving of World §8[§6" + world.name + "§8] §ccompleted!")
                     )
                     WorldCreator(world.name)
                 }
@@ -62,12 +62,12 @@ class WorldManager(private val heliosReset: HeliosReset) {
                 if (!Files.exists(directory.resolve(world.name))) {
                     Bukkit.getConsoleSender().sendMessage(
                         LegacyComponentSerializer.legacyAmpersand()
-                            .deserialize(Constants.PREFIX + "§cNo save of this world found!")
+                            .deserialize(PREFIX + "§cNo save of this world found!")
                     )
                 }
                 copyWorld(directory.resolve(world.name), world.worldFolder.toPath())
                 WorldCreator(world.name)
-                invoker.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(Constants.PREFIX + "§cReset complete!"))
+                invoker.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(PREFIX + "§cReset complete!"))
             }
         }
 
@@ -102,5 +102,9 @@ class WorldManager(private val heliosReset: HeliosReset) {
                 }
             }
         }
+    }
+
+    init {
+        initManager()
     }
 }

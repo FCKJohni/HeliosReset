@@ -1,6 +1,3 @@
 package eu.sentinalcoding.heliosreset
 
-object Constants {
-
-    const val PREFIX = "§8[§cHeliosReset§8] "
-}
+const val PREFIX = "§8[§cHeliosReset§8] "
