@@ -1,0 +1,5 @@
+name: HeliosReset
+author: Johni
+version: b1.0
+api-version: 1.18
+main: eu.sentinalcoding.heliosreset.HeliosReset
